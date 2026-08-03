@@ -19,9 +19,9 @@ from dataset import PointCloudDataset
 CHECKPOINT_PATH = r"checkpoints\checkpoint.pt"
 DATA_DIR = r"C:\Users\rehan\Documents\3D image\data\ModelNet10_pointclouds"
 N_POINTS = 1024
-LATENT_DIM = 256
-N_SAMPLES = 4
-SAVE_PATH = "reconstruction_comparison3.png"
+LATENT_DIM = 512
+N_SAMPLES = 10
+SAVE_PATH = "reconstruction_comparison13.png"
 # ---------------------------------------------------------------------------
 
 
@@ -57,7 +57,7 @@ def main():
 
     # Load the trained model
     model = AutoEncoder(latent_dim=LATENT_DIM, n_points=N_POINTS).to(device)
-    checkpoint = torch.load(CHECKPOINT_PATH, map_location=device)
+    checkpoint = torch.load(CHECKPOINT_PATH, map_location=device, weights_only=False)
 
     # Handle either a raw state_dict or a dict with a "model_state_dict" key
     state_dict = checkpoint.get("model_state_dict", checkpoint) if isinstance(checkpoint, dict) else checkpoint

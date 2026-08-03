@@ -5,7 +5,7 @@ import time
 import input
 from autoencoder import AutoEncoder
 from dataset import _get_dataloader_
-from loss_function import chamfer_distance
+from loss_function import chamfer_distance_knn
 
 start = time.time()
 
@@ -50,20 +50,20 @@ def main():
     train_loader, valid_loader = _get_dataloader_()
 
 
-    optimiser = optim.Adam(autoencoder.parameters(), lr = 0.0001)#, weight_decay=1e-5)
+    optimiser = optim.Adam(autoencoder.parameters(), lr = 0.0001, weight_decay=1e-5)
 
     # Learning rate scheduler 
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-        optimiser, T_0=1000, T_mult=2
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimiser, mode='min', factor=0.5, patience=2
     )
 
     i = 0 
     valid_interval = 300 
-    epochs = 20
+    epochs = 200
     # too many epochs is a bad thing if the training data does not learn 
     # since the model constantly updates its weights, it overfits ultimately 
     patience_counter = 0
-    patience_threshold = 10
+    patience_threshold = 15
 
     # Periodic validation checks
     # to track accuracy and can be used to decide when to save checkpoints
@@ -80,12 +80,16 @@ def main():
                     pts = pts.to(device)
 
                     recon = autoencoder(pts)
-                    loss = chamfer_distance(recon, pts)
+                    #loss = chamfer_distance(recon, pts) + 0.1 * repulsion_loss(recon)
+
+                    loss = chamfer_distance_knn(recon, pts)
 
                     valid_loss += loss.item()
 
             avg_val_loss = valid_loss/ len(valid_loader)
             print(f'Validation loss :{avg_val_loss}')
+
+            scheduler.step(avg_val_loss)
 
             autoencoder.train()
 
@@ -103,6 +107,7 @@ def main():
                 patience_counter += 1
 
             if patience_counter >= patience_threshold: 
+                print("Exited early")
                 return True 
         return False 
 
@@ -113,7 +118,10 @@ def main():
             pts = pts.to(device)
 
             recon = autoencoder(pts)
-            loss = chamfer_distance(recon, pts)
+
+            # loss = chamfer_distance(recon, pts)
+
+            loss = chamfer_distance_knn(recon, pts)
 
             # Clears old gradients 
             optimiser.zero_grad()
@@ -124,8 +132,6 @@ def main():
             # Apply the update onto the optimiser 
             optimiser.step()
 
-            scheduler.step()
-
             i += 1 
             if i % 100 == 0 : 
                 print(f'Batch {i}, Train loss: {loss.item():.4f}')
@@ -134,7 +140,7 @@ def main():
                 break 
         if stop: 
             break
-        print('Epoch done')
+        print(f' Epoch [{epoch} / {epochs}] done')
 
 if __name__ == '__main__': 
     main()

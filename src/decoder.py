@@ -74,3 +74,4 @@ class Decoder(nn.Module):
         return fold2_out
 
     # Decoder being changed to FoldingNet-style 
+    # three-fold decoders have a real, repeatable tendency to collapse into thin/sparse structures, independent of which Chamfer variant you use.
