@@ -5,7 +5,7 @@ can still produce a low loss number).
 
 Edit the variables below, then run: python visualize_reconstructions.py
 """
-
+import os
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
@@ -17,11 +17,11 @@ from dataset import PointCloudDataset
 # Edit these
 # ---------------------------------------------------------------------------
 CHECKPOINT_PATH = r"checkpoints\checkpoint.pt"
-DATA_DIR = r"C:\Users\rehan\Documents\3D image\data\ModelNet10_pointclouds"
+DATA_DIR = r"C:\Users\rehan\Documents\3D image\data\ModelNet40_pointclouds"
 N_POINTS = 1024
 LATENT_DIM = 512
 N_SAMPLES = 10
-SAVE_PATH = "reconstruction_comparison13.png"
+SAVE_PATH = "pics/reconstruction_comparison20.png"
 # ---------------------------------------------------------------------------
 
 
@@ -50,6 +50,8 @@ def plot_comparison(original, reconstructed, save_path=None, n_samples=4):
         plt.savefig(save_path, dpi=150)
         print(f"Saved comparison plot to {save_path}")
     plt.show()
+    plt.pause(10)
+    plt.close(fig)
 
 
 def main():
@@ -64,8 +66,23 @@ def main():
     model.load_state_dict(state_dict)
     model.eval()
 
+
     # Load a few samples from the dataset
     dataset = PointCloudDataset(data_dir=DATA_DIR, n_points=N_POINTS)
+    
+    modelnet10_categories = {
+        "bathtub", "bed", "chair", "desk", "dresser", 
+        "monitor", "night_stand", "sofa", "table", "toilet"
+    }
+
+    dataset.files = [ 
+        f for f in dataset.files
+        if os.path.basename(os.path.dirname(os.path.dirname(f))) not in modelnet10_categories
+    ]
+
+    print(f"Total files after filtering: {len(dataset.files)}")
+    print(dataset.files[0])  # check the actual path structure
+
     indices = np.random.choice(len(dataset), size=N_SAMPLES, replace=False)
 
     originals = torch.stack([dataset[i] for i in indices]).to(device)

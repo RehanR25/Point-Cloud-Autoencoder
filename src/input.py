@@ -7,9 +7,9 @@ import zipfile
 
 # create an image to point cloud pipeline
 
-url = "http://3dvision.princeton.edu/projects/2014/3DShapeNets/ModelNet10.zip"
-zip_path = "ModelNet10.zip"
-extract_dir = r"C:\Users\rehan\Documents\3D image\data\ModelNet10"
+url = "http://modelnet.cs.princeton.edu/ModelNet40.zip"
+zip_path = "ModelNet40.zip"
+extract_dir = r"C:\Users\rehan\Documents\3D image\data\ModelNet40"
 
 extract_parent = os.path.dirname(extract_dir)
 os.makedirs(extract_parent, exist_ok=True)
@@ -29,7 +29,7 @@ def sample_points_from_mesh(off_path, n_points=1024):
     points /= (scale + 1e-8)
     return points 
 
-output_dir = r"C:\Users\rehan\Documents\3D image\data\ModelNet10_pointclouds"
+output_dir = r"C:\Users\rehan\Documents\3D image\data\ModelNet40_pointclouds"
 off_files = glob.glob(os.path.join(extract_dir, "**", "*.off"), recursive=True)
 print(f"Found {len(off_files)} mesh files")
 
@@ -45,6 +45,12 @@ if not os.path.exists(output_dir):
         out_path = os.path.join(output_dir, rel_path).replace(".off", ".npy")
         os.makedirs(os.path.dirname(out_path), exist_ok=True) 
         np.save(out_path, pts) 
+
+npy_files = glob.glob(os.path.join(output_dir, "**", "*.npy"), recursive=True)
+print(f'Found {len(npy_files)} npy files')
+
+if len(off_files) != len(npy_files):
+    print("Processing not completed")
 
 print("Preprocessing done")
 

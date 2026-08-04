@@ -42,6 +42,7 @@ def main():
             print("Resumed from checkpoint with new final layer, resetting loss value")
         else :
             best_val_loss = checkpoint['val_loss']
+            #best_val_loss = float('inf')  # since training on a meaningfully different, and smaller dataset 
             print(f'Resumed from checkpoint, best_val_loss = {best_val_loss:.4f}')
     else : 
         best_val_loss = float('inf')
@@ -50,7 +51,7 @@ def main():
     train_loader, valid_loader = _get_dataloader_()
 
 
-    optimiser = optim.Adam(autoencoder.parameters(), lr = 0.0001, weight_decay=1e-5)
+    optimiser = optim.Adam(autoencoder.parameters(), lr = 0.0001, weight_decay=1e-6)
 
     # Learning rate scheduler 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -59,7 +60,7 @@ def main():
 
     i = 0 
     valid_interval = 300 
-    epochs = 200
+    epochs = 100
     # too many epochs is a bad thing if the training data does not learn 
     # since the model constantly updates its weights, it overfits ultimately 
     patience_counter = 0
