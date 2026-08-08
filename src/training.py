@@ -1,13 +1,11 @@
 import torch 
 from torch import optim 
 import os 
-import time 
 import input
 from autoencoder import AutoEncoder
 from dataset import _get_dataloader_
 from loss_function import chamfer_distance_knn
 
-start = time.time()
 
 def main(): 
 
@@ -51,7 +49,7 @@ def main():
     train_loader, valid_loader = _get_dataloader_()
 
 
-    optimiser = optim.Adam(autoencoder.parameters(), lr = 0.0001, weight_decay=1e-6)
+    optimiser = optim.Adam(autoencoder.parameters(), lr = 0.00001, weight_decay=1e-6)
 
     # Learning rate scheduler 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -60,7 +58,7 @@ def main():
 
     i = 0 
     valid_interval = 300 
-    epochs = 100
+    epochs = 200
     # too many epochs is a bad thing if the training data does not learn 
     # since the model constantly updates its weights, it overfits ultimately 
     patience_counter = 0
@@ -145,4 +143,4 @@ def main():
 
 if __name__ == '__main__': 
     main()
-    print(f'Execution time: {time.time() - start:.6f} seconds')
+    print(f'Training finished')

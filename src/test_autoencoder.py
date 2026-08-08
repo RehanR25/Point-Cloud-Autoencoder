@@ -21,7 +21,7 @@ DATA_DIR = r"C:\Users\rehan\Documents\3D image\data\ModelNet40_pointclouds"
 N_POINTS = 1024
 LATENT_DIM = 512
 N_SAMPLES = 10
-SAVE_PATH = "pics/reconstruction_comparison20.png"
+SAVE_PATH = "pics/reconstruction_comparison25.png"
 # ---------------------------------------------------------------------------
 
 
@@ -50,7 +50,6 @@ def plot_comparison(original, reconstructed, save_path=None, n_samples=4):
         plt.savefig(save_path, dpi=150)
         print(f"Saved comparison plot to {save_path}")
     plt.show()
-    plt.pause(10)
     plt.close(fig)
 
 
@@ -69,19 +68,22 @@ def main():
 
     # Load a few samples from the dataset
     dataset = PointCloudDataset(data_dir=DATA_DIR, n_points=N_POINTS)
+
+    """
     
     modelnet10_categories = {
         "bathtub", "bed", "chair", "desk", "dresser", 
         "monitor", "night_stand", "sofa", "table", "toilet"
     }
+    categories = {"airplane", "bookshelf", "bottle", "cone", "curtain", "flower_pot", "guitar", "keyboard",
+                    "piano", "plant", "tent", "tv_stand","vase","xbox"}
 
     dataset.files = [ 
         f for f in dataset.files
-        if os.path.basename(os.path.dirname(os.path.dirname(f))) not in modelnet10_categories
-    ]
+        if os.path.basename(os.path.dirname(os.path.dirname(f))) in categories
+    ]"""
 
     print(f"Total files after filtering: {len(dataset.files)}")
-    print(dataset.files[0])  # check the actual path structure
 
     indices = np.random.choice(len(dataset), size=N_SAMPLES, replace=False)
 

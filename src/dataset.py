@@ -36,18 +36,34 @@ def _get_dataloader_():
 
     dataset = PointCloudDataset(data_dir=r"data\ModelNet40_pointclouds", n_points=1024) # n_points redundant but good to know 
 
+   
     modelnet10_categories = {
         "bathtub", "bed", "chair", "desk", "dresser", 
         "monitor", "night_stand", "sofa", "table", "toilet"
+    } 
+
+    modelnet40_categories = {
+        "airplane","bathtub","bed","bench","bookshelf","bottle",
+        "bowl","car","chair","cone","cup","curtain","desk",
+        "door","dresser","flower_pot","glass_box","guitar","keyboard",
+        "lamp","laptop","mantel","monitor","night_stand",
+        "person","piano","plant","radio","range_hood","sink",
+        "sofa","stairs","stool","table","tent","toilet",
+        "tv_stand","vase","wardrobe","xbox"
     }
+
+    categories = {"sofa","stairs","stool","table","tent","toilet",
+            "tv_stand","vase","wardrobe","xbox"}
 
     dataset.files = [ 
         f for f in dataset.files
-        if os.path.basename(os.path.dirname(os.path.dirname(f))) not in modelnet10_categories
+        if os.path.basename(os.path.dirname(os.path.dirname(f))) in categories
     ]
-
+    
     val_size = int(len(dataset) * val_fraction)
     train_size = len(dataset) - val_size
+
+    print(f'Dataset has {val_size} number of items')
 
     train_dataset, valid_dataset = random_split(
         dataset, [train_size, val_size], 
