@@ -11,7 +11,7 @@ class Encoder(nn.Module):
             nn.Conv1d(3, 64, 1), nn.BatchNorm1d(64), nn.ReLU(), 
             nn.Conv1d(64, 128, 1), nn.BatchNorm1d(128), nn.ReLU(),
             nn.Conv1d(128, 256, 1), nn.BatchNorm1d(256), nn.ReLU(), 
-            nn.Conv1d(256, latent_dim, 1), nn.BatchNorm1d(512)
+            nn.Conv1d(256, latent_dim, 1), nn.BatchNorm1d(latent_dim)
         )
     def forward(self, x): 
         x = x.transpose(1, 2) # turns (B, N, 3) into (B, 3, N) for Conv1d

@@ -1,7 +1,6 @@
 import torch 
 from torch import optim 
 import os 
-import input
 from autoencoder import AutoEncoder
 from dataset import _get_dataloader_
 from loss_function import chamfer_distance_knn
@@ -39,8 +38,8 @@ def main():
             best_val_loss = float('inf')
             print("Resumed from checkpoint with new final layer, resetting loss value")
         else :
-            best_val_loss = checkpoint['val_loss']
-            #best_val_loss = float('inf')  # since training on a meaningfully different, and smaller dataset 
+            #best_val_loss = checkpoint['val_loss']
+            best_val_loss = float('inf')  # since training on a meaningfully different, and smaller dataset 
             print(f'Resumed from checkpoint, best_val_loss = {best_val_loss:.4f}')
     else : 
         best_val_loss = float('inf')

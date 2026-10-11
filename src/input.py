@@ -9,7 +9,7 @@ import zipfile
 
 url = "http://modelnet.cs.princeton.edu/ModelNet40.zip"
 zip_path = "ModelNet40.zip"
-extract_dir = r"C:\Users\rehan\Documents\3D image\data\ModelNet40"
+extract_dir = os.path.join("data", "ModelNet40")
 
 extract_parent = os.path.dirname(extract_dir)
 os.makedirs(extract_parent, exist_ok=True)
@@ -29,7 +29,8 @@ def sample_points_from_mesh(off_path, n_points=1024):
     points /= (scale + 1e-8)
     return points 
 
-output_dir = r"C:\Users\rehan\Documents\3D image\data\ModelNet40_pointclouds"
+output_dir = os.path.join("data", "ModelNet40_pointclouds")
+
 off_files = glob.glob(os.path.join(extract_dir, "**", "*.off"), recursive=True)
 print(f"Found {len(off_files)} mesh files")
 

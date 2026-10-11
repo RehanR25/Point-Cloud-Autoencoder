@@ -3,7 +3,7 @@ Visualize original vs reconstructed point clouds to sanity-check the
 autoencoder, since Chamfer loss alone can be misleading (mode collapse
 can still produce a low loss number).
 
-Edit the variables below, then run: python visualize_reconstructions.py
+Edit the variables below, then run: python visualise_reconstructions.py
 """
 import os
 import numpy as np
@@ -16,14 +16,15 @@ from dataset import PointCloudDataset
 # ---------------------------------------------------------------------------
 # Edit these
 # ---------------------------------------------------------------------------
-CHECKPOINT_PATH = r"checkpoints\checkpoint.pt"
-DATA_DIR = r"C:\Users\rehan\Documents\3D image\data\ModelNet40_pointclouds"
+CHECKPOINT_PATH = os.path.join("checkpoints", "checkpoint.pt" )
+DATA_DIR = os.path.join("data", "ModelNet40_pointclouds")
 N_POINTS = 1024
 LATENT_DIM = 512
 N_SAMPLES = 10
-SAVE_PATH = "pics/reconstruction_comparison25.png"
+SAVE_PATH = "pics/reconstruction_comparison26.png"  
 # ---------------------------------------------------------------------------
 
+os.makedirs("pics", exist_ok=True)
 
 def plot_comparison(original, reconstructed, save_path=None, n_samples=4):
     """
@@ -81,7 +82,9 @@ def main():
     dataset.files = [ 
         f for f in dataset.files
         if os.path.basename(os.path.dirname(os.path.dirname(f))) in categories
-    ]"""
+    ]""" 
+
+    ## This allows the user to select which files need to be more trained compared to others 
 
     print(f"Total files after filtering: {len(dataset.files)}")
 

@@ -34,8 +34,10 @@ class PointCloudDataset(Dataset):
 
 def _get_dataloader_():
 
-    dataset = PointCloudDataset(data_dir=r"data\ModelNet40_pointclouds", n_points=1024) # n_points redundant but good to know 
+    data_dir = os.path.join("data", "ModelNet40_pointclouds")
 
+    dataset = PointCloudDataset(data_dir= data_dir, n_points=1024) # n_points redundant but good to know 
+    """
    
     modelnet10_categories = {
         "bathtub", "bed", "chair", "desk", "dresser", 
@@ -58,7 +60,7 @@ def _get_dataloader_():
     dataset.files = [ 
         f for f in dataset.files
         if os.path.basename(os.path.dirname(os.path.dirname(f))) in categories
-    ]
+    ]"""
     
     val_size = int(len(dataset) * val_fraction)
     train_size = len(dataset) - val_size
